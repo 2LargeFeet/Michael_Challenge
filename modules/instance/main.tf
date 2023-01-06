@@ -23,14 +23,18 @@ resource "aws_instance" "site" {
   provisioner "remote-exec" {
     inline = [
       "sleep 30",
+      "sudo add-apt-repository ppa:deadsnakes/ppa -y",
       "sudo apt update",
       "sudo apt upgrade -y",
-      "sudo apt install apache2 -y",
+      "sudo apt install apache2 python3-pip -y",
+      "sudo a2enmod ssl",
+      "sudo pip install ansible",
       "sudo chown -R ubuntu:ubuntu /var/www",
       "git clone https://github.com/2LargeFeet/Michael_Challenge.git",
       "sudo cp Michael_Challenge/modules/instance/configs/index.html /var/www/html/index.html",
-      "sudo systemctl restart apache2",
-      "sudo systemctl enable apache2"
+      "sudo ansible-playbook Michael_Challenge/modules/instance/configs/cert.yml --extra-vars='{\"server_ip\": ${aws_instance.site.public_ip}}'"
+#      "sudo systemctl restart apache2",
+#      "sudo systemctl enable apache2"
     ]
 
     connection {
@@ -38,6 +42,23 @@ resource "aws_instance" "site" {
       type        = "ssh"
       user        = "ubuntu"
       private_key = file(var.private_key_file)
+    }
+  }
+}
+
+### Test deployed server
+
+data "http" "hello" {
+  url = "http://${aws_instance.site.public_ip}"
+  insecure = true
+}
+
+resource "null_resource" "hello_test" {
+
+  lifecycle {
+    postcondition {
+      condition = length(split("Hello", data.http.hello.body)) > 1
+      error_message = "The site does not greet the world."
     }
   }
 }
