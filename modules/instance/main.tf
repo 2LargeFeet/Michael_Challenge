@@ -29,7 +29,8 @@ resource "aws_instance" "site" {
       "sudo chown -R ubuntu:ubuntu /var/www",
       "git clone https://github.com/2LargeFeet/Michael_Challenge.git",
       "sudo cp Michael_Challenge/modules/instance/configs/index.html /var/www/html/index.html",
-      "sudo systemctl restart apache2"
+      "sudo systemctl restart apache2",
+      "sudo systemctl enable apache2"
     ]
 
     connection {
