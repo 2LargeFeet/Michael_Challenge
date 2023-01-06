@@ -1,0 +1,6 @@
+secure.auto.tfvars
+*.tfstate
+*.tfstate.*
+.terraform
+*.pem
+LICENSE
