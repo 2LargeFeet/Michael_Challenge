@@ -3,7 +3,7 @@
   hosts: localhost
   become: true
   vars:
-    crypto_dir: /etc/certs/
+    crypto_dir: /etc/certs
   remote_user: "root"
   tasks:
 
@@ -17,18 +17,11 @@
        state: directory
 
 ##Cryptographic files
-##   - name: Generate DH Parameters
-##     openssl_dhparam:
-##       path: "{{ crypto_dir }}/dh2048.pem"
-##       size: 2048
 
    - name: create CA keypair
      openssl_privatekey:
        path: "{{ crypto_dir }}/site.key"
        size: 2048
-
-   - name: generate ta key
-     command: "openvpn --genkey --secret {{ crypto_dir }}/ta.key"
 
    - name: create CA csr
      openssl_csr:
@@ -67,64 +60,28 @@
        ownca_path: "{{ crypto_dir }}/site.crt"
        ownca_privatekey_path: "{{ crypto_dir }}/site.key"
        provider: ownca
-#
-#   - name: create client key
-#     openssl_privatekey:
-#       path: "{{ crypto_dir }}/client.key"
-#       size: 2048
-
-#   - name: create client csr
-#     openssl_csr:
-#       path: "{{ crypto_dir }}/client.csr"
-#       privatekey_path: "{{ crypto_dir }}/client.key"
-#       common_name: client.site.com
-#       key_usage:
-#         - digitalSignature
-#         - keyAgreement
-#       extended_key_usage:
-#         - clientAuth
-
-#   - name: create client cert from ca
-#     openssl_certificate:
-#       path: "{{ crypto_dir }}/client.site.crt"
-#       csr_path: "{{ crypto_dir }}/client.csr"
-#       ownca_path: "{{ crypto_dir }}/site.crt"
-#       ownca_privatekey_path: "{{ crypto_dir }}/site.key"
-#       provider: ownca
 
 ##Create configs
    - name: Copy apache2.conf to site root
      copy:
        src: apache2.conf
-       dest: "etc/apache2/sites-available/{{ server_ip }}.conf"
+       dest: "/etc/apache2/sites-available/{{ server_ip }}.conf"
 
    - name: Update conf with IP address
      lineinfile:
-       path: "etc/apache2/sites-available/{{ server_ip }}.conf"
+       path: "/etc/apache2/sites-available/{{ server_ip }}.conf"
        regexp: '^(.*)   Redirect permanent / https://instance_IP/(.*)$'
        line: '   Redirect permanent / https://{{ server_ip }}/'
 
    - name: Update redirect with IP address
      lineinfile:
-       path: "etc/apache2/sites-available/{{ server_ip }}.conf"
+       path: "/etc/apache2/sites-available/{{ server_ip }}.conf"
        regexp: '^(.*)   ServerName instance_IP(.*)$'
        line: '   ServerName {{ server_ip }}'
 
-#   - name: create client certificate
-#     blockinfile:
-#       block: |
-#         {{ item.label }}
-#         {{ item.crypto }}
-#         {{ item.terminator }}
-#       path: client-config/client.ovpn
-#       marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.label }}"
-#       backup: yes
-#     with_items:
-#       - { label: <ca>, crypto: "{{ lookup('file', '{{ crypto_dir }}/site.crt') }}", terminator: </ca>}
-#       - { label: <cert>, crypto: "{{ lookup('file', '{{ crypto_dir }}/client.site.crt') }}", terminator: </cert>}
-#       - { label: <key>, crypto: "{{ lookup('file', '{{ crypto_dir }}/client.key') }}", terminator: </key>}
-#       - { label: <tls-auth>, crypto: "{{ lookup('file', '{{ crypto_dir }}/ta.key') }}", terminator: </tls-auth>}
-
+# Enable HTTPs
+   - name: Turn on HTTPs
+     command: "sudo a2ensite {{ server_ip }}.conf"
 
 ## Start apache
    - name: Make sure Apache is running
