@@ -21,7 +21,7 @@ for numbers in sys.stdin:
         if (len(unspecial) != 16):
             print ("Invalid")
             continue
-        if not(bool(re.search("^[0-9\-\/]+$", number))):
+        if not(bool(re.search("^[\d\-\/]+$", number))):
             print ("Invalid")
             continue
         if ("-" in number)and not (bool(re.search("^(?:\w{4}-){3}\w{4}$", number))):
