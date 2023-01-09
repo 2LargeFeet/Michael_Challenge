@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
+# The challenge is wrong. When you run the code, it expects a single character to be valid.
+# I'm not an expert on credit cards, however I'm reasonably certain a single "6" should be
+# considered "Invalid"
+
 import re
 import sys
-import string
-
-with open ('ccNumbers.txt') as numbers:
-    lines = numbers.read().splitlines()
+ 
+for numbers in sys.stdin:
+    lines = numbers.splitlines()
     for number in lines:
         first = int(number[0])
         unspecial = re.sub("[^0-9]", "", number)
