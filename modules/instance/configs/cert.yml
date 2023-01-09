@@ -74,10 +74,10 @@
        line: '   Redirect permanent / https://{{ server_ip }}/'
 
    - name: Update redirect with IP address
-     lineinfile:
+     replace:
        path: "/etc/apache2/sites-available/{{ server_ip }}.conf"
        regexp: '^(.*)   ServerName instance_IP(.*)$'
-       line: '   ServerName {{ server_ip }}'
+       replace: '   ServerName {{ server_ip }}'
 
 # Enable HTTPs
    - name: Turn on HTTPs
