@@ -70,8 +70,8 @@
    - name: Update conf with IP address
      lineinfile:
        path: "/etc/apache2/sites-available/{{ server_ip }}.conf"
-       regexp: '^(.*)   Redirect permanent / https://instance_IP/(.*)$'
-       line: '   Redirect permanent / https://{{ server_ip }}/'
+       regexp: '^(.*)   Redirect permanent / https://instance_IP(.*)$'
+       line: '   Redirect permanent / https://{{ server_ip }}'
 
    - name: Update redirect with IP address
      replace:
