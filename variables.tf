@@ -22,6 +22,20 @@ variable cidr_block {
     default = "10.23.0.0/16"
 }
 
-variable cidr_subnet {
-    default = "10.23.0.0/24"
+variable external_subnets {
+    type = list(object({
+        name  = string,
+        availability_zone = string,
+        cidr = string,
+        location = string
+    }))
+}
+
+variable internal_subnets {
+    type = list(object({
+        name  = string,
+        availability_zone = string,
+        cidr = string,
+        location = string
+    }))
 }
