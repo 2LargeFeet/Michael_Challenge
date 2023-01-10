@@ -17,7 +17,7 @@ resource "aws_instance" "site" {
   instance_type               = "t2.micro"
   key_name                    = var.private_key
   vpc_security_group_ids      = [var.security_group]
-  subnet_id                   = var.subnet
+  subnet_id                   = var.internal_subnet
   associate_public_ip_address = true
 
   provisioner "remote-exec" {
