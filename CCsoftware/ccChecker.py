@@ -10,18 +10,19 @@ import sys
 for numbers in sys.stdin:
     lines = numbers.splitlines()
     for number in lines:
-        first = int(number[0])
         unspecial = re.sub("[^0-9]", "", number)
+        first = int(unspecial[0])
+        print(unspecial)
         if (bool(re.search(r'(\d)\1{3}', unspecial))):
             print ("Invalid")
             continue
-        if (first < 4 or first > 6):
-            print(f"Invalid")
-            continue
-        if (len(unspecial) != 16):
+        if not(bool(re.search("^[\d\-\/]+$", number))):
             print ("Invalid")
             continue
-        if not(bool(re.search("^[\d\-\/]+$", number))):
+        if (first < 4 or first > 6):
+            print ("Invalid")
+            continue
+        if (len(unspecial) != 16):
             print ("Invalid")
             continue
         if ("-" in number)and not (bool(re.search("^(?:\w{4}-){3}\w{4}$", number))):
