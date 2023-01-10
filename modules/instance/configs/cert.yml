@@ -86,7 +86,7 @@
 ## Start apache
    - name: Make sure Apache is running
      systemd:
-       name: apache2@server
+       name: apache2
        state: restarted
        enabled: yes
      
