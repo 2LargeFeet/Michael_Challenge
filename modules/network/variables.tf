@@ -1,12 +1,6 @@
 variable "cidr_block" {
 }
 
-#variable "external_cidr_subnets" {
-#}
-
-#variable "internal_cidr_subnets"{  
-#}
-
 variable "external_subnets" {
 }
 

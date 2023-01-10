@@ -2,8 +2,6 @@ module "network" {
     source="./modules/network"
 
     cidr_block = var.cidr_block
-#    external_cidr_subnets = var.external_cidr_subnets
-#    internal_cidr_subnets = var.internal_cidr_subnets
     external_subnets = var.external_subnets
     internal_subnets = var.internal_subnets
     site_instance = module.instance.site_instance
